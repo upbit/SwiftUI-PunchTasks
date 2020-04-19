@@ -14,7 +14,7 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
     @FetchRequest(
         entity: PunchTask.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \PunchTask.update, ascending: false)]
+        sortDescriptors: [NSSortDescriptor(keyPath: \PunchTask.title, ascending: true)]
     ) var fetchedItems: FetchedResults<PunchTask>
     // predicate: NSPredicate(format: "isComplete == %@", NSNumber(value: false)
 
@@ -23,60 +23,44 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack {
+                InputNewTask
+                Divider()
                 
-                HStack {
-                    TextField("新增打卡目标...", text: $newTaskTitle)
-                        .padding(.leading, 16)
-                    Button(action: {
-                        self.addTask()
-                    }) {
-                       Image(systemName: "plus")
-                    }
-                    .padding(.all, 16)
-                }
-                .background(
-                    Color(red: 235.0/255.0, green: 245.0/255.0, blue: 255.0/255.0)
-                )
-
                 List {
                     ForEach(fetchedItems, id: \.self){ item in
                         NavigationLink(destination:
-                            TaskView(index: self.fetchedItems.firstIndex(of: item)!)
+                            TaskView(task: item)
                         ) {
-                            HStack {
-                                Image(item.eggImage!)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 36, height: 48)
-                                    .shadow(radius: 4.0, x: 2.0, y: 2.0)
-                                    .padding(.leading, 16)
-                                
-                                Text(item.title ?? "<empty>")
-                                    .font(.headline)
-                                    .shadow(radius: 4.0, x: 2.0, y: 2.0)
-                                    .padding(.leading, 8)
-                                
-                                Spacer()
-                            }
+                            PunchTaskView(task: item)
                         }
-                    }
-                    .onDelete(perform: removeItems)
+                    }.onDelete(perform: removeItems)
                 }
-                .navigationBarTitle("小雯雯", displayMode: .inline)
-                .navigationBarItems(trailing:
-                    Button(action: {}) {
-                        HStack {
-                            Image(systemName: "person.crop.circle")
-                                .imageScale(.large)
-                            
-                        }
-                    }
-                )
-
             }
+            .navigationBarTitle("小雯雯", displayMode: .inline)
+            .navigationBarItems(trailing:
+                Button(action: {}) {
+                    HStack {
+                        Image(systemName: "person.crop.circle")
+                            .imageScale(.large)
+                    }
+                }
+            )
         }
     }
 
+    private var InputNewTask: some View {
+        return HStack {
+            TextField("新增打卡目标...", text: $newTaskTitle)
+                .padding([.leading, .top], 12)
+            
+            Button(action: {
+                self.addTask()
+            }) {
+               Image(systemName: "plus")
+            }.padding([.trailing, .top], 12)
+        }
+    }
+    
     func addTask() {
         guard newTaskTitle != "" else {
             return
@@ -84,6 +68,7 @@ struct ContentView: View {
 
         let newTask = PunchTask(context: managedObjectContext)
         newTask.title = newTaskTitle
+        newTask.update = Date().addingTimeInterval(-86400)
         newTask.initRandomMonster()
         
         do {
@@ -108,10 +93,56 @@ struct ContentView: View {
     }
 }
 
-extension View {
-    func Print(_ vars: Any...) -> some View {
-        for v in vars { print(v) }
-        return EmptyView()
+struct PunchTaskView: View {
+    var task: PunchTask
+    
+    var body: some View {
+        return HStack {
+            
+            if task.isComplete == false {
+                Image(task.eggImage!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 36, height: 48)
+                    .shadow(radius: 4.0, x: 2.0, y: 2.0)
+                    .padding(.leading, 16)
+                Text(task.title!)
+                    .font(.headline)
+                    .shadow(radius: 4.0, x: 2.0, y: 2.0)
+                    .padding(.leading, 16)
+                
+            } else {
+                Image(task.monsterImage!)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 36, height: 48)
+                    .shadow(radius: 4.0, x: 2.0, y: 2.0)
+                    .padding(.leading, 16)
+                Text(task.title!)
+                    .font(.headline)
+                    .foregroundColor(
+                        Color(red: 239.0/255.0, green: 187.0/255.0, blue: 36.0/255.0)
+                    )
+                    .shadow(radius: 4.0, x: 2.0, y: 2.0)
+                    .padding(.leading, 16)
+                
+            }
+
+            Spacer()
+            
+            if task.isComplete == false {
+                Text(String(format: "%.0f%%", Double(task.count)/Double(task.countMax) * 100.0))
+                    .font(.custom("Helvetica Neue", size: 14))
+                    .foregroundColor(.gray)
+                    .shadow(radius: 4.0, x: 2.0, y: 2.0)
+            } else {
+                Text("已孵化")
+                    .font(.custom("Helvetica Neue", size: 14))
+                    .foregroundColor(.gray)
+                    .shadow(radius: 4.0, x: 2.0, y: 2.0)
+            }
+
+        }
     }
 }
 
