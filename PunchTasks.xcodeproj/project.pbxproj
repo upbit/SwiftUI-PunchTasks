@@ -40,7 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		84C58151244AA1DF00BEA703 /* 打卡小怪.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "打卡小怪.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		84C58151244AA1DF00BEA703 /* PunchTasks.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PunchTasks.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84C58154244AA1DF00BEA703 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		84C58156244AA1DF00BEA703 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		84C58159244AA1DF00BEA703 /* PunchTasks.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PunchTasks.xcdatamodel; sourceTree = "<group>"; };
@@ -99,7 +99,7 @@
 		84C58152244AA1DF00BEA703 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				84C58151244AA1DF00BEA703 /* 打卡小怪.app */,
+				84C58151244AA1DF00BEA703 /* PunchTasks.app */,
 				84C5816A244AA1E200BEA703 /* PunchTasksTests.xctest */,
 				84C58175244AA1E200BEA703 /* PunchTasksUITests.xctest */,
 			);
@@ -168,7 +168,7 @@
 			);
 			name = PunchTasks;
 			productName = PunchTasks;
-			productReference = 84C58151244AA1DF00BEA703 /* 打卡小怪.app */;
+			productReference = 84C58151244AA1DF00BEA703 /* PunchTasks.app */;
 			productType = "com.apple.product-type.application";
 		};
 		84C58169244AA1E200BEA703 /* PunchTasksTests */ = {
@@ -465,7 +465,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.zzz.p2020.PunchTasks;
-				PRODUCT_NAME = "打卡小怪";
+				PRODUCT_NAME = PunchTasks;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -486,7 +486,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.zzz.p2020.PunchTasks;
-				PRODUCT_NAME = "打卡小怪";
+				PRODUCT_NAME = PunchTasks;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};

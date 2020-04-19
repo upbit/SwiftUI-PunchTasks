@@ -41,9 +41,18 @@ struct InCompleteTask: View {
     @Environment(\.managedObjectContext) var managedObjectContext
     
     var task: PunchTask
-
+    
+    @State private var selected: Bool = false
+    
     var body: some View {
         let progress = CGFloat(Double(task.count) / Double(task.countMax))
+        
+        let animation = CABasicAnimation(keyPath: "position")
+        animation.duration = 0.06
+        animation.repeatCount = 4
+        animation.autoreverses = true
+        animation.fromValue = CGPoint(x: 100 - 10, y: 125)
+        animation.toValue = CGPoint(x: 100 + 10, y: 125)
         
         return VStack {
 
@@ -56,7 +65,8 @@ struct InCompleteTask: View {
 
             Image(task.eggImage!)
                 .shadow(radius: 8.0, x: 4.0, y: 2.0)
-                .animation(.easeInOut(duration: 1.0))
+                .modifier(ShakeEffect(shakes: selected ? 2 : 0))
+                .animation(Animation.linear)
 
             ProgressBar(size: 200.0, progress: progress)
 
@@ -67,7 +77,12 @@ struct InCompleteTask: View {
                 .padding(.bottom, 32)
 
             Button(action: {
-                self.punchTask(task: self.task)
+                withAnimation {
+                    if self.punchTask(task: self.task) {
+                        self.selected.toggle()
+                    }
+                }
+                
             }) {
                 Text("打卡")
                     .font(.headline)
@@ -84,7 +99,7 @@ struct InCompleteTask: View {
         }
     }
     
-    func punchTask(task: PunchTask) {
+    func punchTask(task: PunchTask) -> Bool {
         let now = Date()
         let hours = now.hoursBetweenDate(toDate: task.update!)
         if task.count < task.countMax && hours >= 23 {
@@ -94,13 +109,33 @@ struct InCompleteTask: View {
             if task.count == task.countMax {
                 task.isComplete = true
             }
+            
+            do {
+                try managedObjectContext.save()
+                return true
+            } catch {
+                print(error.localizedDescription)
+            }
         }
-        
-        do {
-            try managedObjectContext.save()
-        } catch {
-            print(error.localizedDescription)
-        }
+    
+        return false
+    }
+}
+
+struct ShakeEffect: GeometryEffect {
+    func effectValue(size: CGSize) -> ProjectionTransform {
+        let ani = CGAffineTransform(translationX: -30 * sin(position * 2 * .pi), y: 0)
+        return ProjectionTransform(ani)
+    }
+    
+    init(shakes: Int) {
+        position = CGFloat(shakes)
+    }
+    
+    var position: CGFloat
+    var animatableData: CGFloat {
+        get { position }
+        set { position = newValue }
     }
 }
 
