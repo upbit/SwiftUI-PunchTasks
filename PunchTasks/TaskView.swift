@@ -37,10 +37,9 @@ struct TaskView: View {
 }
 
 struct InCompleteTask: View {
+    var task: PunchTask
     
     @Environment(\.managedObjectContext) var managedObjectContext
-    
-    var task: PunchTask
     
     @State private var selected: Bool = false
     

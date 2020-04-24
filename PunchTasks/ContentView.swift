@@ -16,35 +16,44 @@ struct ContentView: View {
         entity: PunchTask.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \PunchTask.title, ascending: true)]
     ) var fetchedItems: FetchedResults<PunchTask>
-    // predicate: NSPredicate(format: "isComplete == %@", NSNumber(value: false)
+    @FetchRequest(
+        entity: UserInfo.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \UserInfo.name, ascending: true)]
+    ) var userInfoItems: FetchedResults<UserInfo>
 
     @State private var newTaskTitle: String = ""
 
     var body: some View {
-        NavigationView {
-            VStack {
-                InputNewTask
-                Divider()
-                
-                List {
-                    ForEach(fetchedItems, id: \.self){ item in
-                        NavigationLink(destination:
-                            TaskView(task: item)
-                        ) {
-                            PunchTaskView(task: item)
+        VStack {
+            if userInfoItems.count == 0 {
+                LoginView()
+            } else {
+                NavigationView {
+                    VStack {
+                        InputNewTask
+                        Divider()
+                        
+                        List {
+                            ForEach(fetchedItems, id: \.self){ item in
+                                NavigationLink(destination:
+                                    TaskView(task: item)
+                                ) {
+                                    PunchTaskView(task: item)
+                                }
+                            }.onDelete(perform: removeItems)
                         }
-                    }.onDelete(perform: removeItems)
+                    }
+                    .navigationBarTitle(Text(userInfoItems.first!.name!), displayMode: .inline)
+                    .navigationBarItems(trailing:
+                        Button(action: {}) {
+                            HStack {
+                                Image(systemName: "person.crop.circle")
+                                    .imageScale(.large)
+                            }
+                        }
+                    )
                 }
             }
-            .navigationBarTitle("小雯雯", displayMode: .inline)
-            .navigationBarItems(trailing:
-                Button(action: {}) {
-                    HStack {
-                        Image(systemName: "person.crop.circle")
-                            .imageScale(.large)
-                    }
-                }
-            )
         }
     }
 
