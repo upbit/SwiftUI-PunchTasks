@@ -12,7 +12,7 @@ struct TaskView: View {
     var task: PunchTask
 
     @Environment(\.managedObjectContext) var managedObjectContext
-    
+
     var body: some View {
         return VStack {
             Spacer()
@@ -65,8 +65,11 @@ struct InCompleteTask: View {
 
             Image(task.eggImage!)
                 .shadow(radius: 8.0, x: 4.0, y: 2.0)
-                .modifier(ShakeEffect(shakes: selected ? 2 : 0))
+                .modifier(eggShakeEffect(shakes: selected ? 2 : 0))
                 .animation(Animation.linear)
+                .onTapGesture {
+                    self.selected.toggle()
+                }
 
             ProgressBar(size: 200.0, progress: progress)
 
@@ -101,8 +104,8 @@ struct InCompleteTask: View {
     
     func punchTask(task: PunchTask) -> Bool {
         let now = Date()
-        let hours = now.hoursBetweenDate(toDate: task.update!)
-        if task.count < task.countMax && hours >= 23 {
+        let sameDay = now.isSameDay(toDate: task.update!)
+        if (task.count == 0) || (task.count < task.countMax && !sameDay) {
             task.count += 1
             task.update = now
             
@@ -122,9 +125,11 @@ struct InCompleteTask: View {
     }
 }
 
-struct ShakeEffect: GeometryEffect {
+struct eggShakeEffect: GeometryEffect {
     func effectValue(size: CGSize) -> ProjectionTransform {
-        let ani = CGAffineTransform(translationX: -30 * sin(position * 2 * .pi), y: 0)
+        let ani = CGAffineTransform(translationX: size.width/2, y: 3*size.height/4)
+            .rotated(by: -0.1 * sin(position * 2 * .pi))
+            .translatedBy(x: -size.width/2, y: -3*size.height/4)
         return ProjectionTransform(ani)
     }
     
@@ -220,6 +225,12 @@ extension Date {
     func hoursBetweenDate(toDate: Date) -> Int {
         let components = Calendar.current.dateComponents([.hour], from: toDate, to: self)
         return components.hour ?? 0
+    }
+
+    func isSameDay(toDate: Date) -> Bool {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyyMMdd"
+        return formatter.string(from: self) == formatter.string(from: toDate)
     }
 }
 

@@ -68,7 +68,7 @@ struct ContentView: View {
 
         let newTask = PunchTask(context: managedObjectContext)
         newTask.title = newTaskTitle
-        newTask.update = Date().addingTimeInterval(-86400)
+        newTask.update = Date()
         newTask.initRandomMonster()
         
         do {
