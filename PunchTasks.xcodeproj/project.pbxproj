@@ -123,7 +123,6 @@
 			children = (
 				84DFDA4F244AD87100B7A8D0 /* PunchTask+CoreDataClass.swift */,
 				84DFDA50244AD87100B7A8D0 /* PunchTask+CoreDataProperties.swift */,
-				84E1941D2453E51B0058391D /* Views */,
 				84C58154244AA1DF00BEA703 /* AppDelegate.swift */,
 				84C58156244AA1DF00BEA703 /* SceneDelegate.swift */,
 				84C5815B244AA1DF00BEA703 /* ContentView.swift */,
@@ -168,13 +167,6 @@
 				84C5817B244AA1E200BEA703 /* Info.plist */,
 			);
 			path = PunchTasksUITests;
-			sourceTree = "<group>";
-		};
-		84E1941D2453E51B0058391D /* Views */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

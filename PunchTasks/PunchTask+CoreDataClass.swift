@@ -11,7 +11,7 @@ import Foundation
 import CoreData
 
 @objc(PunchTask)
-public class PunchTask: NSManagedObject {
+public class PunchTask: NSManagedObject, Identifiable {
 
     func initRandomMonster() {
         let rand = Double.random(in: 0...1)

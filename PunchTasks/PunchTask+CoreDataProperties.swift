@@ -17,6 +17,7 @@ extension PunchTask {
         return NSFetchRequest<PunchTask>(entityName: "PunchTask")
     }
 
+    @NSManaged public var id: UUID?
     @NSManaged public var title: String?
     @NSManaged public var eggImage: String?
     @NSManaged public var monsterImage: String?

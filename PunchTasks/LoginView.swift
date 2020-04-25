@@ -74,11 +74,11 @@ struct LoginView: View {
                 Text("确认")
                     .font(.headline)
                     .foregroundColor(.white)
-                    .padding()
                     .frame(width: 200, height: 48)
                     .background(self.isGirlSelect ? Color.MOMO : Color.MIZU)
                     .cornerRadius(24.0)
                     .shadow(radius: 16.0)
+                    .padding()
             }
             .padding()
             

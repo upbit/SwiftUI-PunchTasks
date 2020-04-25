@@ -19,22 +19,12 @@ struct TaskView: View {
     
     var body: some View {
         return VStack {
-            Spacer()
-            
             if task.isComplete == false {
                 InCompleteTaskView(user: userInfoItems.first!, task: task)
             } else {
-                CompleteTaskView(user: userInfoItems.first!, task: task)
+                CompleteTaskView(user: userInfoItems.first!, task: task, showModal: .constant(false))
             }
-            
-            Spacer()
         }
-        .padding(.horizontal, 100)
-        .background(
-            LinearGradient(gradient: Gradient(colors:
-                userInfoItems.first!.isGirl ? [Color.MOMO, Color.MOMO, Color.MIZU] : [Color.MIZU, Color.MIZU, Color.MOMO]
-            ), startPoint: .top, endPoint: .bottom)
-        .edgesIgnoringSafeArea(.all))
     }
     
 }

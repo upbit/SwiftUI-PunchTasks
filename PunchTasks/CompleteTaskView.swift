@@ -11,11 +11,14 @@ import SwiftUI
 struct CompleteTaskView: View {
     var user: UserInfo
     var task: PunchTask
+
+    @Binding var showModal: Bool
     
-    @State var scale: CGFloat = 0.8
+    @State private var scale: CGFloat = 0.8
     
     var body: some View {
         return VStack {
+            Spacer()
             
             if task.monsterImage! == "poke_pikaqu" {
                 Image(task.monsterImage!)
@@ -52,7 +55,7 @@ struct CompleteTaskView: View {
 
             Text(task.title!)
                 .font(.headline)
-                .foregroundColor(.UKON)
+                .foregroundColor(.NANOHANA)
                 .shadow(radius: 4.0, x: 2.0, y: 2.0)
                 .padding(.top, 16)
             
@@ -62,7 +65,30 @@ struct CompleteTaskView: View {
                 .shadow(radius: 4.0, x: 2.0, y: 2.0)
                 .padding(.top, 8)
 
+            if self.showModal {
+                Button(action: {
+                    self.showModal.toggle()
+                }) {
+                    Text("确认")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .frame(width: 200, height: 48)
+                        .background(Color.UKON)
+                        .cornerRadius(24.0)
+                        .shadow(radius: 8.0)
+                }
+                .padding(.top, 48)
+            }
+
+            Spacer()
         }
+        .padding(.horizontal, 100)
+        .background(
+            LinearGradient(gradient: Gradient(colors:
+                user.isGirl ? [Color.KOHAKU, Color.NANOHANA] : [Color.NANOHANA, Color.NANOHANA, Color.KOHAKU]
+            ), startPoint: .top, endPoint: .bottom)
+        .edgesIgnoringSafeArea(.all))
     }
 }
 
@@ -78,7 +104,7 @@ struct CompleteTaskView_Previews: PreviewProvider {
         testTask.count = 99
         testTask.isComplete = true
         
-        return CompleteTaskView(user: testUser, task: testTask).environment(\.managedObjectContext, context)
+        return CompleteTaskView(user: testUser, task: testTask, showModal:  .constant(true)).environment(\.managedObjectContext, context)
     }
 }
 #endif
