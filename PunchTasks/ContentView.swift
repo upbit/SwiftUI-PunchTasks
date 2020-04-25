@@ -15,7 +15,10 @@ struct ContentView: View {
     @FetchRequest(
         entity: PunchTask.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \PunchTask.title, ascending: true)],
-        predicate: NSPredicate(format: "%K == %d", #keyPath(PunchTask.isComplete), false)
+        predicate: NSCompoundPredicate(orPredicateWithSubpredicates: [
+            NSPredicate(format: "%K == %d", #keyPath(PunchTask.isComplete), false),
+            NSPredicate(format: "%K > %@", #keyPath(PunchTask.update), Date(timeIntervalSinceNow: -12 * 3600) as NSDate),
+        ])
     ) var fetchedItems: FetchedResults<PunchTask>
     @FetchRequest(
         entity: UserInfo.entity(),
@@ -48,16 +51,6 @@ struct ContentView: View {
                         }
                     }
                     .navigationBarTitle("打卡小怪", displayMode: .inline)
-//                    .navigationBarItems(trailing:
-//                        HStack {
-//                            NavigationLink(destination:
-//                                UserProfileView(user: userInfoItems.first!)
-//                            ) {
-//                                Image(systemName: "person.crop.circle")
-//                                    .imageScale(.large)
-//                            }
-//                        }
-//                    )
                 }
             }
         }
@@ -73,13 +66,11 @@ struct ContentView: View {
                Image(systemName: "plus")
             }
             
-            HStack {
-                NavigationLink(destination:
-                    UserProfileView(user: userInfoItems.first!)
-                ) {
-                    Image(systemName: "person.crop.circle")
-                        .imageScale(.large)
-                }
+            NavigationLink(destination:
+                UserProfileView(user: userInfoItems.first!)
+            ) {
+                Image(systemName: "person.crop.circle")
+                    .imageScale(.large)
             }
             .padding([.leading, .trailing], 8)
         }
@@ -117,57 +108,7 @@ struct ContentView: View {
     }
 }
 
-struct PunchTaskView: View {
-    var task: PunchTask
-    
-    var body: some View {
-        return HStack {
-            
-            if task.isComplete == false {
-                Image(task.eggImage!)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 36, height: 48)
-                    .shadow(radius: 4.0, x: 2.0, y: 2.0)
-                    .padding(.leading, 16)
-                Text(task.title!)
-                    .font(.headline)
-                    .shadow(radius: 4.0, x: 2.0, y: 2.0)
-                    .padding(.leading, 16)
-                
-            } else {
-                Image(task.monsterImage!)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 36, height: 48)
-                    .shadow(radius: 4.0, x: 2.0, y: 2.0)
-                    .padding(.leading, 16)
-                Text(task.title!)
-                    .font(.headline)
-                    .foregroundColor(.KOHAKU)
-                    .shadow(radius: 4.0, x: 2.0, y: 2.0)
-                    .padding(.leading, 16)
-                
-            }
-
-            Spacer()
-            
-            if task.isComplete == false {
-                Text("\(task.count) / \(task.countMax)")
-                    .font(.custom("Helvetica Neue", size: 14))
-                    .foregroundColor(.gray)
-                    .shadow(radius: 4.0, x: 2.0, y: 2.0)
-            } else {
-                Text("已孵化")
-                    .font(.custom("Helvetica Neue", size: 14))
-                    .foregroundColor(.KOHAKU)
-                    .shadow(radius: 4.0, x: 2.0, y: 2.0)
-            }
-
-        }
-    }
-}
-
+#if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -175,3 +116,4 @@ struct ContentView_Previews: PreviewProvider {
         return ContentView().environment(\.managedObjectContext, context)
     }
 }
+#endif

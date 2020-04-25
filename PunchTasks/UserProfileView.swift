@@ -14,7 +14,7 @@ struct UserProfileView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
     @FetchRequest(
         entity: PunchTask.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \PunchTask.title, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \PunchTask.update, ascending: false)],
         predicate: NSPredicate(format: "%K == %d", #keyPath(PunchTask.isComplete), true)
     ) var fetchedItems: FetchedResults<PunchTask>
 
@@ -26,13 +26,22 @@ struct UserProfileView: View {
                     .padding(.leading, 16)
                 Divider()
                 
-                List {
-                    ForEach(fetchedItems, id: \.self){ item in
-                        PunchTaskView(task: item)
+                ScrollView(.horizontal, showsIndicators: true) {
+                    HStack(alignment: .bottom) {
+                        ForEach(fetchedItems, id: \.self) { task in
+                            Image(task.monsterImage!)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 88, height: 96)
+                                .padding(.leading, 24)
+                        }
                     }
                 }
-                .navigationBarTitle(Text(user.name!))
+                .frame(height: 192)
+                
+                Spacer()
             }
+            .navigationBarTitle(user.name!)
         }
     }
 }
