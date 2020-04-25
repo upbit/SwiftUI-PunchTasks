@@ -14,11 +14,12 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) var managedObjectContext
     @FetchRequest(
         entity: PunchTask.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \PunchTask.title, ascending: true)]
+        sortDescriptors: [NSSortDescriptor(keyPath: \PunchTask.title, ascending: true)],
+        predicate: NSPredicate(format: "%K == %d", #keyPath(PunchTask.isComplete), false)
     ) var fetchedItems: FetchedResults<PunchTask>
     @FetchRequest(
         entity: UserInfo.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \UserInfo.name, ascending: true)]
+        sortDescriptors: [NSSortDescriptor(keyPath: \UserInfo.totalPunchs, ascending: true)]
     ) var userInfoItems: FetchedResults<UserInfo>
 
     @State private var newTaskTitle: String = ""
@@ -29,10 +30,13 @@ struct ContentView: View {
                 LoginView()
             } else {
                 NavigationView {
-                    VStack {
+                    VStack(alignment: .leading, spacing: 2) {
                         InputNewTask
+                            .padding([.leading, .top], 12)
+
                         Divider()
-                        
+                            .padding(.top, 8)
+
                         List {
                             ForEach(fetchedItems, id: \.self){ item in
                                 NavigationLink(destination:
@@ -43,15 +47,17 @@ struct ContentView: View {
                             }.onDelete(perform: removeItems)
                         }
                     }
-                    .navigationBarTitle(Text(userInfoItems.first!.name!), displayMode: .inline)
-                    .navigationBarItems(trailing:
-                        Button(action: {}) {
-                            HStack {
-                                Image(systemName: "person.crop.circle")
-                                    .imageScale(.large)
-                            }
-                        }
-                    )
+                    .navigationBarTitle("打卡小怪", displayMode: .inline)
+//                    .navigationBarItems(trailing:
+//                        HStack {
+//                            NavigationLink(destination:
+//                                UserProfileView(user: userInfoItems.first!)
+//                            ) {
+//                                Image(systemName: "person.crop.circle")
+//                                    .imageScale(.large)
+//                            }
+//                        }
+//                    )
                 }
             }
         }
@@ -60,13 +66,22 @@ struct ContentView: View {
     private var InputNewTask: some View {
         return HStack {
             TextField("新增打卡目标...", text: $newTaskTitle)
-                .padding([.leading, .top], 12)
             
             Button(action: {
                 self.addTask()
             }) {
                Image(systemName: "plus")
-            }.padding([.trailing, .top], 12)
+            }
+            
+            HStack {
+                NavigationLink(destination:
+                    UserProfileView(user: userInfoItems.first!)
+                ) {
+                    Image(systemName: "person.crop.circle")
+                        .imageScale(.large)
+                }
+            }
+            .padding([.leading, .trailing], 8)
         }
     }
     
@@ -138,7 +153,7 @@ struct PunchTaskView: View {
             Spacer()
             
             if task.isComplete == false {
-                Text(String(format: "%.0f%%", Double(task.count)/Double(task.countMax) * 100.0))
+                Text("\(task.count) / \(task.countMax)")
                     .font(.custom("Helvetica Neue", size: 14))
                     .foregroundColor(.gray)
                     .shadow(radius: 4.0, x: 2.0, y: 2.0)

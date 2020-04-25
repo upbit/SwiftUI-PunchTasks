@@ -12,33 +12,39 @@ struct TaskView: View {
     var task: PunchTask
 
     @Environment(\.managedObjectContext) var managedObjectContext
-
+    @FetchRequest(
+        entity: UserInfo.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \UserInfo.totalPunchs, ascending: true)]
+    ) var userInfoItems: FetchedResults<UserInfo>
+    
     var body: some View {
         return VStack {
             Spacer()
             
             if task.isComplete == false {
-                InCompleteTask(task: task)
+                InCompleteTask(user: userInfoItems.first!, task: task)
             } else {
-                CompleteTask(task: task)
+                CompleteTask(user: userInfoItems.first!, task: task)
             }
             
             Spacer()
         }
         .padding(.horizontal, 100)
         .background(
-            LinearGradient(gradient: Gradient(colors: [.MIZU, .MOMO]),
-                           startPoint: .top, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors:
+                userInfoItems.first!.isGirl ? [Color.MOMO, Color.MOMO, Color.MIZU] : [Color.MIZU, Color.MIZU, Color.MOMO]
+            ), startPoint: .top, endPoint: .bottom)
         .edgesIgnoringSafeArea(.all))
     }
     
 }
 
 struct InCompleteTask: View {
+    var user: UserInfo
     var task: PunchTask
     
     @Environment(\.managedObjectContext) var managedObjectContext
-    
+
     @State private var selected: Bool = false
     
     var body: some View {
@@ -101,10 +107,12 @@ struct InCompleteTask: View {
         let sameDay = now.isSameDay(toDate: task.update!)
         if (task.count == 0) || (task.count < task.countMax && !sameDay) {
             task.count += 1
+            user.totalPunchs += 1
             task.update = now
-            
+
             if task.count == task.countMax {
                 task.isComplete = true
+                user.sucPunchs += 1
             }
             
             do {
@@ -144,6 +152,7 @@ struct eggShakeEffect: GeometryEffect {
 }
 
 struct CompleteTask: View {
+    var user: UserInfo
     var task: PunchTask
     
     @State var scale: CGFloat = 0.8
