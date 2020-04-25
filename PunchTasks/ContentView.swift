@@ -129,9 +129,7 @@ struct PunchTaskView: View {
                     .padding(.leading, 16)
                 Text(task.title!)
                     .font(.headline)
-                    .foregroundColor(
-                        Color(red: 239.0/255.0, green: 187.0/255.0, blue: 36.0/255.0)
-                    )
+                    .foregroundColor(.KOHAKU)
                     .shadow(radius: 4.0, x: 2.0, y: 2.0)
                     .padding(.leading, 16)
                 
@@ -147,7 +145,7 @@ struct PunchTaskView: View {
             } else {
                 Text("已孵化")
                     .font(.custom("Helvetica Neue", size: 14))
-                    .foregroundColor(.gray)
+                    .foregroundColor(.KOHAKU)
                     .shadow(radius: 4.0, x: 2.0, y: 2.0)
             }
 

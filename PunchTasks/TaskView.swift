@@ -27,10 +27,8 @@ struct TaskView: View {
         }
         .padding(.horizontal, 100)
         .background(
-            LinearGradient(gradient: Gradient(colors: [
-                Color(red: 129.0/255.0, green: 199.0/255.0, blue: 212.0/255.0),
-                Color(red: 248.0/255.0, green: 195.0/255.0, blue: 205.0/255.0),
-            ]), startPoint: .top, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [.MIZU, .MOMO]),
+                           startPoint: .top, endPoint: .bottom)
         .edgesIgnoringSafeArea(.all))
     }
     
@@ -52,20 +50,19 @@ struct InCompleteTask: View {
         animation.autoreverses = true
         animation.fromValue = CGPoint(x: 100 - 10, y: 125)
         animation.toValue = CGPoint(x: 100 + 10, y: 125)
-        
+
         return VStack {
 
             Text(task.title!)
                 .font(.headline)
-                .foregroundColor(
-                    Color(red: 239.0/255.0, green: 187.0/255.0, blue: 36.0/255.0)
-                )
-                .shadow(radius: 4.0, x: 2.0, y: 2.0)
+                .foregroundColor(.UKON)
+                .shadow(radius: 4.0, x: 2.0, y: 4.0)
 
             Image(task.eggImage!)
-                .shadow(radius: 8.0, x: 4.0, y: 2.0)
-                .modifier(eggShakeEffect(shakes: selected ? 2 : 0))
-                .animation(Animation.linear)
+                .shadow(radius: 8.0, x: 2.0, y: 8.0)
+                .modifier(eggShakeEffect(shakes: selected ? 2 : 0,
+                                         ratio: Float(task.count)/Float(task.countMax)))
+                .animation(Animation.linear(duration: 0.5))
                 .onTapGesture {
                     self.selected.toggle()
                 }
@@ -91,11 +88,9 @@ struct InCompleteTask: View {
                     .foregroundColor(.white)
                     .padding()
                     .frame(width: 200, height: 48)
-                    .background(
-                        Color(red: 247.0/255.0, green: 217.0/255.0, blue: 76.0/255.0)
-                    )
+                    .background(Color.NANOHANA)
                     .cornerRadius(24.0)
-                    .shadow(radius: 8.0, x: 4, y: 10)
+                    .shadow(radius: 8.0)
             }
             
         }
@@ -127,19 +122,24 @@ struct InCompleteTask: View {
 struct eggShakeEffect: GeometryEffect {
     func effectValue(size: CGSize) -> ProjectionTransform {
         let ani = CGAffineTransform(translationX: size.width/2, y: 3*size.height/4)
-            .rotated(by: -0.1 * sin(position * 2 * .pi))
+            .rotated(by: -angle * sin(position * 2 * .pi))
             .translatedBy(x: -size.width/2, y: -3*size.height/4)
         return ProjectionTransform(ani)
     }
     
-    init(shakes: Int) {
+    init(shakes: Int, ratio: Float) {
         position = CGFloat(shakes)
+        angle = CGFloat(0.01 + 0.1 * ratio)
     }
     
     var position: CGFloat
-    var animatableData: CGFloat {
-        get { position }
-        set { position = newValue }
+    var angle: CGFloat
+    var animatableData: AnimatablePair<CGFloat, CGFloat> {
+        get { AnimatablePair(position, angle) }
+        set {
+            position = newValue.first
+            angle = newValue.second
+        }
     }
 }
 
@@ -186,9 +186,7 @@ struct CompleteTask: View {
 
             Text(task.title!)
                 .font(.headline)
-                .foregroundColor(
-                    Color(red: 239.0/255.0, green: 187.0/255.0, blue: 36.0/255.0)
-                )
+                .foregroundColor(.UKON)
                 .shadow(radius: 4.0, x: 2.0, y: 2.0)
                 .padding(.top, 16)
             

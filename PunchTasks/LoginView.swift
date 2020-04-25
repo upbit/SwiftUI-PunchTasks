@@ -23,9 +23,10 @@ struct LoginView: View {
         VStack {
             Spacer()
             
-            Text("首先，请告诉我你是谁？")
-                .font(.headline)
-                .shadow(radius: 8.0, x: 0, y: 0)
+            Text("请告诉我你是谁？")
+                .font(.title)
+                .foregroundColor(.SAKURA)
+                .shadow(radius: 4.0, x: 4.0, y: 4.0)
                 .padding()
                 
             HStack {
@@ -33,7 +34,15 @@ struct LoginView: View {
                     self.isGirlSelect = true
                     self.userName = "小雯雯"
                 }) {
-                    UserImage(src: "Girl")
+                    VStack {
+                        UserImage(src: "Girl")
+                        Text("小雯雯")
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .foregroundColor(.NANOHANA)
+                            .padding(.top, 8)
+                            .shadow(radius: 4.0, x: 4.0, y: 4.0)
+                    }
                 }
                 .buttonStyle(PlainButtonStyle())
                 
@@ -43,7 +52,15 @@ struct LoginView: View {
                     self.isGirlSelect = false
                     self.userName = "小昊昊"
                 }) {
-                    UserImage(src: "Boy")
+                    VStack {
+                        UserImage(src: "Boy")
+                        Text("小昊昊")
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .foregroundColor(.NANOHANA)
+                            .padding(.top, 8)
+                            .shadow(radius: 4.0, x: 4.0, y: 4.0)
+                    }
                 }
                 .buttonStyle(PlainButtonStyle())
             }
@@ -59,9 +76,9 @@ struct LoginView: View {
                     .foregroundColor(.white)
                     .padding()
                     .frame(width: 200, height: 48)
-                    .background(self.isGirlSelect ? Color.sakura : Color.water)
+                    .background(self.isGirlSelect ? Color.MOMO : Color.MIZU)
                     .cornerRadius(24.0)
-                    .shadow(radius: 16.0, x: 0, y: 0)
+                    .shadow(radius: 16.0)
             }
             .padding()
             
@@ -69,14 +86,15 @@ struct LoginView: View {
         }
         .background(
             LinearGradient(gradient: Gradient(colors:
-                self.isGirlSelect ? [.water, .sakura] : [.sakura, .water]
+                self.isGirlSelect ? [.MIZU, .MOMO] : [.MOMO, .MIZU]
             ), startPoint: .top, endPoint: .bottom)
         .edgesIgnoringSafeArea(.all))
     }
-    
+
     func setUserInfo() {
         let userInfo = UserInfo(context: managedObjectContext)
         userInfo.name = userName
+        userInfo.isGirl = isGirlSelect
         
         do {
             try managedObjectContext.save()
@@ -97,23 +115,41 @@ struct UserImage: View {
             .resizable()
             .aspectRatio(contentMode: .fill)
             .frame(width: 150, height: 150)
-            .clipped()
-            .cornerRadius(150)
-            .shadow(radius: 8.0, x: 0, y: 0)
+            .clipShape(Circle())
+            .overlay(Circle().stroke(Color.NANOHANA, lineWidth: 4))
+            .shadow(radius: 8.0)
     }
 }
 
 extension Color {
-    static var gold: Color {
-        return Color(red: 247.0/255.0, green: 217.0/255.0, blue: 76.0/255.0)
+    // 鬱金
+    static var UKON: Color {
+        return Color(red: 239.0/256, green: 187.0/256, blue: 36.0/256)
+    }
+
+    // 菜の花
+    static var NANOHANA: Color {
+        return Color(red: 247.0/256, green: 217.0/256, blue: 76.0/256)
     }
     
-    static var water: Color {
-        return Color(red: 129.0/255.0, green: 199.0/255.0, blue: 212.0/255.0)
+    // 琥珀
+    static var KOHAKU: Color {
+        return Color(red: 202.0/256, green: 122.0/256, blue: 44.0/256)
+    }
+
+    // 水
+    static var MIZU: Color {
+        return Color(red: 129.0/256, green: 199.0/256, blue: 212.0/256)
     }
     
-    static var sakura: Color {
-        return Color(red: 248.0/255.0, green: 195.0/255.0, blue: 205.0/255.0)
+    // 桃
+    static var MOMO: Color {
+        return Color(red: 245.0/256, green: 150.0/256, blue: 170.0/256)
+    }
+
+    // 桜
+    static var SAKURA: Color {
+        return Color(red: 254.0/256, green: 223.0/256, blue: 225.0/256)
     }
 }
 

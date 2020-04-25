@@ -10,10 +10,12 @@
         <attribute name="update" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
     <entity name="UserInfo" representedClassName="UserInfo" syncable="YES" codeGenerationType="class">
+        <attribute name="isGirl" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="totalPunchs" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
     <elements>
         <element name="PunchTask" positionX="-18" positionY="36" width="128" height="148"/>
-        <element name="UserInfo" positionX="-45" positionY="0" width="128" height="58"/>
+        <element name="UserInfo" positionX="-45" positionY="0" width="128" height="88"/>
     </elements>
 </model>
