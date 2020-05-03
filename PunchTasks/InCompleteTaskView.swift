@@ -74,8 +74,8 @@ struct InCompleteTaskView: View {
     func punchTask(task: PunchTask) -> Bool {
         let now = Date()
         let sameDay = now.isSameDay(toDate: task.update!)
-        if (task.count == 0) || (task.count < task.countMax && !sameDay) {
-        // if true {
+        // if (task.count == 0) || (task.count < task.countMax && !sameDay) {
+        if true {
             task.count += 1
             user.totalPunchs += 1
             task.update = now

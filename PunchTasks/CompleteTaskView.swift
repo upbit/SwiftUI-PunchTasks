@@ -83,7 +83,7 @@ struct CompleteTaskView: View {
 
             Spacer()
         }
-        .padding(.horizontal, 100)
+        .padding(.horizontal, 120)
         .background(
             LinearGradient(gradient: Gradient(colors:
                 user.isGirl ? [Color.KOHAKU, Color.NANOHANA] : [Color.NANOHANA, Color.NANOHANA, Color.KOHAKU]
